@@ -18,5 +18,9 @@
     "puppeteer": "^16.1.0",
     "request": "^2.88.2",
     "spotify-web-api-node": "^5.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.22.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
