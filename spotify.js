@@ -1,11 +1,10 @@
 const SpotifyWebApi = require("spotify-web-api-node");
 const axios = require("axios").default;
 const qs = require("qs");
-const path = require("path");
-const { writeFile} = require("node:fs/promises");
+
 require("dotenv").config();
 const {lookOnSlider} = require("./slider");
-const { createDlRepository } = require("./utils");
+const { createDlRepository, printReport } = require("./utils");
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -13,9 +12,6 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const spotifyApi = new SpotifyWebApi();
 
 const report = {warnings: [], found: [], notFound: []};
-
-const DL_REPO= __dirname;
-
 
 const exec = async () => {
     try {
@@ -44,7 +40,7 @@ const exec = async () => {
         // }else{
         //   console.log('time elt not found');
         // }
-        await printReport(playlistName);
+        await printReport(playlistName, report);
     } catch (err) {
         console.error(err);
     }
@@ -84,13 +80,6 @@ async function initSpotifyApi() {
         },
     );
     spotifyApi.setAccessToken(resToken.data.access_token);
-}
-
-
-async function printReport(playlistName) {
-    console.log("Printing report");
-    console.log(DL_REPO+path.sep+"report.json");
-    await writeFile(DL_REPO+path.sep+`report${playlistName}.json`, JSON.stringify(report), "utf-8");
 }
 
 module.exports = {execSpotify: exec};

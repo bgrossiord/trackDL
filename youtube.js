@@ -1,7 +1,10 @@
 const {google} = require("googleapis");
-const { createDlRepository } = require("./utils");
+const moment = require("moment");
+const { lookOnSlider } = require("./slider");
+const { createDlRepository, printReport } = require("./utils");
 require("dotenv").config();
 
+const report = {warnings: [], found: [], notFound: []};
 
 const youtube = google.youtube({
     version: "v3",
@@ -9,21 +12,33 @@ const youtube = google.youtube({
 });
 
 const exec = async ()=>{
-    const youtubeVids = await youtube.playlistItems.list( {
+    const plItems = await youtube.playlistItems.list( {
         part: "id,snippet", playlistId: "PL1F7eVznPLVI5cWY2fldnN_DYAeMzqODe", maxResults: 50});
-    const playlist = await youtube.playlists.list({id: "PL1F7eVznPLVI5cWY2fldnN_DYAeMzqODe",  part: "id,snippet"});
+    const playlist = await youtube.playlists.list({id: "PL1F7eVznPLVI5cWY2fldnN_DYAeMzqODe",  part: "id,snippet,contentDetails"});
     const playlistName = "Youtube-" + playlist.data.items[0].snippet.title;
     console.log(
-        `Retrieved ${youtubeVids.data.items.length.length} tracks reference from ${playlistName} `,
+        `Retrieved ${plItems.data.items.length.length} tracks reference from ${playlistName} `,
     );
-
     const dlPath = await createDlRepository(playlistName);
 
-    console.log("youtubeVids.data.items",youtubeVids.data.items[0]);
+    console.log("youtubeVids.data.items",plItems.data.items[0]);
 
-    for (const vid of youtubeVids.data.items) {
-        vid.snippet.title;
+    for (const plItem of plItems.data.items) {
+        const resVid = await youtube.videos.list({
+            "part": [
+                "contentDetails"
+            ],
+            "id": [
+                plItem.snippet.resourceId.videoId
+            ]
+        });
+        // console.log("resVid",resVid);
+        const d = moment.duration(resVid.data.items[0].contentDetails.duration);
+        // console.log("duration ", d);
+        console.log("duration in ms", d.asMilliseconds());
+        await lookOnSlider({search: plItem.snippet.title.replace(/ *\[[^\]]*]/, ""), duration: d.asMilliseconds() }, playlistName, dlPath, report);
     }
+    await printReport(playlistName, report);
 
 
     // const videoIds = wlItems.data.items.map((item)=>(item.contentDetails.videoId)).join(",")

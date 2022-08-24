@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 const axios = require("axios").default;
 
 async function lookOnSlider(
-    trackInfo,
+    {search , duration},
     playlistName,
     dlPath,
     { warnings, found, notFound }
@@ -11,9 +11,9 @@ async function lookOnSlider(
     const browser = await puppeteer.launch();
 
     const page = await browser.newPage();
-    console.log("going to ", "https://slider.kz/#" + trackInfo.search);
+    console.log("going to ", "https://slider.kz/#" + search);
     // TODO search for all  tracks
-    await page.goto("https://slider.kz/#" + trackInfo.search);
+    await page.goto("https://slider.kz/#" + search);
 
     const query = "#fullwrapper > div:nth-child(1)";
     const popup = await page.$(query);
@@ -63,7 +63,7 @@ async function lookOnSlider(
 
             const msDuration = parseInt(minutes) * 60000 + parseInt(seconds) * 1000;
             console.log("msDuration", msDuration);
-            console.log("trackInfo.duration", trackInfo.duration);
+            console.log("trackInfo.duration", duration);
 
             if (biteRate >= 320) {
                 const dlLink = parentHtml.slice(
@@ -71,28 +71,30 @@ async function lookOnSlider(
                     parentHtml.indexOf("\" class=\"sm2_link\">")
                 );
                 page._client;
-                await downloadFile( "https://slider.kz" + dlLink, dlPath + trackInfo.search + ".mp3",
-                    trackInfo.search,
+                await downloadFile( "https://slider.kz" + dlLink, dlPath + search + ".mp3",
+                    search,
                     found
                 );
-                if (Math.abs(msDuration - trackInfo.duration) > 60000) {
+                if (Math.abs(msDuration - duration) > 60000) {
                     warnings.push({
-                        track: trackInfo.search,
+                        track: search,
                         warning: "Duration difference is greater than 1 minute",
                     });
                 }
                 foundTrack = true;
-                found.push(trackInfo.search);
+                found.push(search);
                 break;
             } else {
                 informer.click();
             }
         }
         if (!foundTrack) {
-            notFound.push(trackInfo.search);
+            notFound.push(search);
+            console.log("Not found :(");
         }
     } else {
-        notFound.push(trackInfo.search);
+        notFound.push(search);
+        console.log("Not found any result on slider :(");
     }
     await browser.close();
 }

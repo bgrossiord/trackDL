@@ -1,4 +1,5 @@
 .env
 node_modules
 Spotify-*
+Youtube-*
 client_secret.json
