@@ -1,7 +1,7 @@
 const {google} = require("googleapis");
 const moment = require("moment");
 const { lookOnSlider } = require("./slider");
-const { createDlRepository, printReport } = require("./utils");
+const { createDlRepository, printReport, readReport } = require("./utils");
 require("dotenv").config();
 
 const report = {warnings: [], found: [], notFound: []};
@@ -20,8 +20,9 @@ const exec = async ()=>{
         `Retrieved ${plItems.data.items.length.length} tracks reference from ${playlistName} `,
     );
     const dlPath = await createDlRepository(playlistName);
+        
+    const existingReport = await readReport(playlistName);
 
-    console.log("youtubeVids.data.items",plItems.data.items[0]);
 
     for (const plItem of plItems.data.items) {
         const resVid = await youtube.videos.list({
@@ -36,7 +37,12 @@ const exec = async ()=>{
         const d = moment.duration(resVid.data.items[0].contentDetails.duration);
         // console.log("duration ", d);
         console.log("duration in ms", d.asMilliseconds());
-        await lookOnSlider({search: plItem.snippet.title.replace(/ *\[[^\]]*]/, ""), duration: d.asMilliseconds() }, playlistName, dlPath, report);
+        const search = plItem.snippet.title.replace(/ *\[[^\]]*]/, "");
+        if(!existingReport || !existingReport.found.includes(search) ){
+            await lookOnSlider({search:search, duration: d.asMilliseconds() }, playlistName, dlPath, report);
+        }else{
+            report.found.push(search);
+        }
     }
     await printReport(playlistName, report);
 

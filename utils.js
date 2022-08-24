@@ -1,6 +1,6 @@
 const {mkdir} = require("node:fs/promises");
 const path = require("path");
-const { writeFile} = require("node:fs/promises");
+const { writeFile, readFile} = require("node:fs/promises");
 
 const DL_REPO= __dirname;
 
@@ -17,10 +17,24 @@ async function createDlRepository(playlistName) {
     return dlPath;
 }
 
-async function printReport(playlistName) {
+async function printReport(playlistName,report) {
     console.log("Printing report");
     console.log(DL_REPO+path.sep+"report.json");
     await writeFile(DL_REPO+path.sep+`report${playlistName}.json`, JSON.stringify(report), "utf-8");
 }
 
-module.exports = {createDlRepository, printReport};
+async function readReport(playlistName){
+    try {
+        let rawdata = await readFile(DL_REPO+path.sep+`report${playlistName}.json`);
+        let report = JSON.parse(rawdata);
+        return report;
+    } catch (err) {
+        if (err.code !== "ENOENT") {
+            throw err;
+        }
+        return;
+    }
+    
+}
+
+module.exports = {createDlRepository, printReport, readReport};

@@ -11,7 +11,7 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
 const spotifyApi = new SpotifyWebApi();
 
-const report = {warnings: [], found: [], notFound: []};
+let report = {warnings: [], found: [], notFound: []};
 
 const exec = async () => {
     try {
