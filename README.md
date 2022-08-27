@@ -115,10 +115,14 @@ Also, be sure to have `git` available in your PATH, `npm` might need it (You can
   SPOTIFY_CLIENT_ID = "YOUR_SPOTIFY_CLIENT_ID"
   SPOTIFY_CLIENT_SECRET = "YOUR_SPOTIFY_CLIENT_SECRET"
   YOUTUBE_API_KEY= "YOUR_YOUTUBE_API_KEY"
-  SPOTIFY_PLAYLISTS= ["SPOTIFY_PLAYLIST1_ID","SPOTIFY_PLAYLIST2_ID",...]
-  YOUTUBE_PLAYLISTS= ["YOUTUBE_PLAYLIST1_ID","YOUTUBE_PLAYLIST2_ID",...]
+  SPOTIFY_PLAYLISTS= "SPOTIFY_PLAYLIST1_ID,SPOTIFY_PLAYLIST2_ID,..."
+  YOUTUBE_PLAYLISTS= "YOUTUBE_PLAYLIST1_ID,YOUTUBE_PLAYLIST2_ID,..."
    ```
 Playlist ids can be easily found at the end of the sharing link url ;)
+6. Start the search and download 
+   ```sh
+   npm start
+   ```
 
 ### Configuration
 The above parameters are the required ones but you can add other optionnal parameters in the .env file

@@ -13,40 +13,36 @@ const spotifyApi = new SpotifyWebApi();
 
 let report = {warnings: [], found: [], notFound: []};
 
+
+const PLAYLISTS_IDS = process.env.SPOTIFY_PLAYLISTS.split(",");
+
+
 const exec = async () => {
     try {
         await initSpotifyApi();
-        // TODO loop on multiple playlist
-        const plID = "5OYUnlIGByxk97cGXK6psO?si=c9861c487c404b39";
-        const artistNameTracksDuration = await getSpotifyTracksFromPL(plID);
-        const playlistRes = await spotifyApi.getPlaylist(plID);
-        const playlistName = "Spotify-" + playlistRes.body.name;
-        console.log(
-            `Retrieved ${artistNameTracksDuration.length} tracks reference from ${playlistName} `,
-        );
-        const dlPath = await createDlRepository(playlistName);
-        const existingReport = await readReport(playlistName);
+        
+        for (const plID of PLAYLISTS_IDS) {
+            console.log(plID);
+            const artistNameTracksDuration = await getSpotifyTracksFromPL(plID);
+            const playlistRes = await spotifyApi.getPlaylist(plID);
+            const playlistName = "Spotify-" + playlistRes.body.name;
+            console.log(
+                `Retrieved ${artistNameTracksDuration.length} tracks reference from ${playlistName} `,
+            );
+            const dlPath = await createDlRepository(playlistName);
+            const existingReport = await readReport(playlistName);
 
 
-        for (const trackInfo of artistNameTracksDuration) {
-            if(!existingReport || !existingReport.found.includes(trackInfo.search) ){
-                await lookOnSlider(trackInfo, dlPath, report);
-            }else{
-                console.log(trackInfo.search  + "was found previously");
-                report.found.push(trackInfo.search );
+            for (const trackInfo of artistNameTracksDuration) {
+                if(!existingReport || !existingReport.found.includes(trackInfo.search) ){
+                    await lookOnSlider(trackInfo, dlPath, report);
+                }else{
+                    console.log(trackInfo.search  + "was found previously");
+                    report.found.push(trackInfo.search );
+                }
             }
+            await printReport(playlistName, report);
         }
-
-        // const timeElt = await trackElt.$('.controlPanel .track-time')
-        // console.log(JSON.stringify(trackElt.jsonValue()))
-
-        // if(timeElt){
-        //   timeElt.click()
-        //   console.log('time elt clicked');
-        // }else{
-        //   console.log('time elt not found');
-        // }
-        await printReport(playlistName, report);
     } catch (err) {
         console.error(err);
     }
