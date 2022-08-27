@@ -1,15 +1,15 @@
 {
-  "name": "spotdl",
+  "name": "trackdl",
   "version": "1.0.0",
-  "description": "download spotify playlist",
+  "description": "download spotify and youtube playlists",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index",
     "youtube": "node youtube"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "bgrossiord",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",

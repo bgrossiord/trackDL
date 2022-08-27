@@ -17,23 +17,11 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
-
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/bgrossiord/trackDL">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
-<h3 align="center">project_title</h3>
+<h3 align="center">trackDL</h3>
 
   <p align="center">
-    project_description
+    A node side project allowing to download your Spotify and Youtube playlists
     <br />
-    <a href="https://github.com/bgrossiord/trackDL"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/bgrossiord/trackDL">View Demo</a>
     ·
     <a href="https://github.com/bgrossiord/trackDL/issues">Report Bug</a>
     ·
@@ -49,15 +37,13 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#configuration">Configuration</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -74,36 +60,40 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `bgrossiord`, `trackDL`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+This is a fun side project started during summer 2022. It's using youtube and spotify apis to get tracks info from playlists.
+Then looking for them on slider.kz.
+It download the mp3 only if the title is approximately matching the artist and the track name, if the bitrate is 320kbps or above and if the duration difference is not above 60 seconds.
+By default your mp3s will be downloaded in this project repository.
+Those criterias and the download repo are configurable see the (<a href="#configuration">configuration section</a>)
+A report is generated for each playlists with some alerts and a list of found an not found track search.
+When you execute the program again it wont look for already found tracks.
+
+Please surpport artists buy their tracks on [https://bandcamp.com/](bandcamp)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### Built With
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+#### Node & npm
+- ##### Node installation on Windows
+
+  Just go on [official Node.js website](https://nodejs.org/) and download the installer.
+Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
+
+- ##### Node installation on Ubuntu
+
+  You can install nodejs and npm easily with apt install, just run the following commands.
+
+      $ sudo apt install nodejs
+      $ sudo apt install npm
+
+- ##### Other Operating Systems
+  You can find more information about the installation on the [official Node.js website](https://nodejs.org/) and the [official NPM website](https://npmjs.org/).
+
 * npm
   ```sh
   npm install npm@latest -g
@@ -111,18 +101,34 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Get a free Spotify API Key follow this guide [https://developer.spotify.com/documentation/general/guides/authorization/app-settings/](spotify guide)
+2. Register a youtube api app and get an api key see the api keys section of this guide [https://developers.google.com/youtube/registering_an_application](youtube guide)
+3. Clone the repo
    ```sh
    git clone https://github.com/bgrossiord/trackDL.git
    ```
-3. Install NPM packages
+4. Install NPM packages
    ```sh
    npm install
    ```
-4. Configure your `.env` file
+5. Create & configure your `.env` file
    ```text
-   API_KEY = 'ENTER YOUR API'
+  SPOTIFY_CLIENT_ID = "YOUR_SPOTIFY_CLIENT_ID"
+  SPOTIFY_CLIENT_SECRET = "YOUR_SPOTIFY_CLIENT_SECRET"
+  YOUTUBE_API_KEY= "YOUR_YOUTUBE_API_KEY"
+  SPOTIFY_PLAYLISTS= ["SPOTIFY_PLAYLIST1_ID","SPOTIFY_PLAYLIST2_ID",...]
+  YOUTUBE_PLAYLISTS= ["YOUTUBE_PLAYLIST1_ID","YOUTUBE_PLAYLIST2_ID",...]
+   ```
+Playlist ids can be easily found at the end of the sharing link url ;)
+
+### Configuration
+The above parameters are the required ones but you can add other optionnal parameters in the .env file
+   ```text
+  DL_REPO=Download path for tracks
+  SIMILARITY_TRESHOLD=value between 0 and 1 used as threshold for rejection of the track based on title comparison see string-similarity npm package comparTwoStrings for more detail
+  REJECT_TIME_DIFF=maximum difference in seconds between the track duration and the one found for rejecting the track
+  WARNING_TIME_DIFF=maximum difference in seconds between the track duration and the one found for adding the track to warnings in report
+  BITRATE_LIMIT=minimum bitrate for rejecting the track (320 by default)
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -141,12 +147,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 
 <!-- ROADMAP -->
-## Roadmap
+## Theoretical Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] Improve existing 
+    - [ ] Make searchTerm more relevant (especially for youtube)
+    - [ ] Allow user to reject a track that was found and not download the same in future executions
+    - [ ] Add Tests
+- [ ] Add a in memory DB
+- [ ] Add a graphical interface usin electron
+- [ ] Analyse tracks to determine music genre
 
 See the [open issues](https://github.com/bgrossiord/trackDL/issues) for a full list of proposed features (and known issues).
 
@@ -156,8 +165,6 @@ See the [open issues](https://github.com/bgrossiord/trackDL/issues) for a full l
 
 <!-- CONTRIBUTING -->
 ## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
@@ -193,9 +200,11 @@ Project Link: [https://github.com/bgrossiord/trackDL](https://github.com/bgrossi
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [https://www.npmjs.com/package/string-similarity](string similarity)
+* [https://github.com/puppeteer/puppeteer](puppeteer)
+* [https://www.npmjs.com/package/googleapis](googleapis)
+* [https://www.npmjs.com/package/spotify-web-api-node](spotify-web-api-node)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -216,19 +225,3 @@ Project Link: [https://github.com/bgrossiord/trackDL](https://github.com/bgrossi
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 

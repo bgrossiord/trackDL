@@ -5,11 +5,12 @@ const stringSimilarity = require("string-similarity");
 
 require("dotenv").config();
 
-const SIMILARITY_TRESHOLD=  process.env.SIMILARITY_TRESHOLD ? process.env.SIMILARITY_TRESHOLD  : 0.7;
+const SIMILARITY_THRESHOLD=  process.env.SIMILARITY_THRESHOLD ? process.env.SIMILARITY_THRESHOLD  : 0.7;
 
 
-const REJECT_TIME_DIFF = process.env.REJECT_TIME_DIFF ? process.env.REJECT_TIME_DIFF  : 90;
+const REJECT_TIME_DIFF = process.env.REJECT_TIME_DIFF ? process.env.REJECT_TIME_DIFF  : 60;
 const WARNING_TIME_DIFF = process.env.WARNING_TIME_DIFF ? process.env.WARNING_TIME_DIFF  : 10;
+const BITRATE_LIMIT = process.env.BITRATE_LIMIT ? process.env.BITRATE_LIMIT : 320;
 
 async function lookOnSlider(
     {search , duration},
@@ -55,7 +56,7 @@ async function lookOnSlider(
                 break;
             }
             const similarity = stringSimilarity.compareTwoStrings(titleSlider.toLowerCase(), search.toLowerCase());
-            if(similarity<SIMILARITY_TRESHOLD){
+            if(similarity<SIMILARITY_THRESHOLD){
                 console.log(titleSlider+" &&&& "+search);
                 console.log("Title are too different rejecting this link :",similarity);
                 break;
@@ -88,7 +89,7 @@ async function lookOnSlider(
             console.log("msDuration", msDuration);
             console.log("trackInfo.duration", duration);
 
-            if (biteRate >= 320) {
+            if (biteRate >= BITRATE_LIMIT) {
                 const dlLink = parentHtml.slice(
                     parentHtml.indexOf("<a href=\"") + "<a href=\"".length,
                     parentHtml.indexOf("\" class=\"sm2_link\">")

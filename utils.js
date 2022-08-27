@@ -1,8 +1,9 @@
 const {mkdir} = require("node:fs/promises");
 const path = require("path");
 const { writeFile, readFile} = require("node:fs/promises");
+require("dotenv").config();
 
-const DL_REPO= __dirname;
+const DL_REPO = process.env.DL_REPO ? process.env.DL_REPO  : __dirname;
 
 async function createDlRepository(playlistName) {
     const dlPath = DL_REPO + path.sep + playlistName + path.sep;
