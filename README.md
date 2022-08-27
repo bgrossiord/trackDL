@@ -46,7 +46,6 @@
         <li><a href="#configuration">Configuration</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -68,7 +67,7 @@ Those criterias and the download repo are configurable see the (<a href="#config
 A report is generated for each playlists with some alerts and a list of found an not found track search.
 When you execute the program again it wont look for already found tracks.
 
-Please surpport artists buy their tracks on [https://bandcamp.com/](bandcamp)
+Please surpport artists buy their tracks on [bandcamp](https://bandcamp.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -101,8 +100,8 @@ Also, be sure to have `git` available in your PATH, `npm` might need it (You can
 
 ### Installation
 
-1. Get a free Spotify API Key follow this guide [https://developer.spotify.com/documentation/general/guides/authorization/app-settings/](spotify guide)
-2. Register a youtube api app and get an api key see the api keys section of this guide [https://developers.google.com/youtube/registering_an_application](youtube guide)
+1. Get a free Spotify API Key follow this guide [spotify guide](https://developer.spotify.com/documentation/general/guides/authorization/app-settings/)
+2. Register a youtube api app and get an api key see the api keys section of this guide [youtube guide](https://developers.google.com/youtube/registering_an_application)
 3. Clone the repo
    ```sh
    git clone https://github.com/bgrossiord/trackDL.git
@@ -132,19 +131,6 @@ The above parameters are the required ones but you can add other optionnal param
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Theoretical Roadmap
@@ -200,10 +186,10 @@ Project Link: [https://github.com/bgrossiord/trackDL](https://github.com/bgrossi
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [https://www.npmjs.com/package/string-similarity](string similarity)
-* [https://github.com/puppeteer/puppeteer](puppeteer)
-* [https://www.npmjs.com/package/googleapis](googleapis)
-* [https://www.npmjs.com/package/spotify-web-api-node](spotify-web-api-node)
+* [string similarity](https://www.npmjs.com/package/string-similarity)
+* [puppeteer](https://github.com/puppeteer/puppeteer)
+* [googleapis](https://www.npmjs.com/package/googleapis)
+* [spotify-web-api-node](https://www.npmjs.com/package/spotify-web-api-node)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
