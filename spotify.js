@@ -4,7 +4,7 @@ const qs = require("qs");
 
 require("dotenv").config();
 const {lookOnSlider} = require("./slider");
-const { createDlRepository, printReport } = require("./utils");
+const { createDlRepository, printReport, readReport } = require("./utils");
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -25,10 +25,16 @@ const exec = async () => {
             `Retrieved ${artistNameTracksDuration.length} tracks reference from ${playlistName} `,
         );
         const dlPath = await createDlRepository(playlistName);
+        const existingReport = await readReport(playlistName);
 
 
         for (const trackInfo of artistNameTracksDuration) {
-            await lookOnSlider(trackInfo, playlistName, dlPath, report);
+            if(!existingReport || !existingReport.found.includes(trackInfo.search) ){
+                await lookOnSlider(trackInfo, dlPath, report);
+            }else{
+                console.log(trackInfo.search  + "was found previously");
+                report.found.push(trackInfo.search );
+            }
         }
 
         // const timeElt = await trackElt.$('.controlPanel .track-time')

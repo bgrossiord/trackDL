@@ -1,10 +1,9 @@
-const {execSpotify} = require("./spotify");
-//const { execYoutube } = require("./youtube");
+const { execSpotify } = require("./spotify");
+const { execYoutube } = require("./youtube");
 
-
-const exec = async ()=>{
+const exec = async () => {
     await execSpotify();
-    //await execYoutube();
+    await execYoutube();
 };
 
 exec();

@@ -18,7 +18,8 @@
     "moment": "^2.29.4",
     "puppeteer": "^16.1.0",
     "request": "^2.88.2",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
     "eslint": "^8.22.0",

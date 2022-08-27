@@ -20,7 +20,7 @@ const exec = async ()=>{
         `Retrieved ${plItems.data.items.length.length} tracks reference from ${playlistName} `,
     );
     const dlPath = await createDlRepository(playlistName);
-        
+
     const existingReport = await readReport(playlistName);
 
 
@@ -39,8 +39,9 @@ const exec = async ()=>{
         console.log("duration in ms", d.asMilliseconds());
         const search = plItem.snippet.title.replace(/ *\[[^\]]*]/, "");
         if(!existingReport || !existingReport.found.includes(search) ){
-            await lookOnSlider({search:search, duration: d.asMilliseconds() }, playlistName, dlPath, report);
+            await lookOnSlider({search:search, duration: d.asMilliseconds() }, dlPath, report);
         }else{
+            console.log(search  + " was found previously");
             report.found.push(search);
         }
     }
