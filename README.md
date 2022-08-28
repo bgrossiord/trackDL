@@ -111,6 +111,7 @@ Also, be sure to have `git` available in your PATH, `npm` might need it (You can
    npm install
    ```
 5. Create & configure your `.env` file
+<br/>
 Playlist ids can be easily found at the end of the sharing link url ;)
   ```sh
   SPOTIFY_CLIENT_ID = "YOUR_SPOTIFY_CLIENT_ID"
@@ -119,7 +120,7 @@ Playlist ids can be easily found at the end of the sharing link url ;)
   SPOTIFY_PLAYLISTS= "SPOTIFY_PLAYLIST1_ID,SPOTIFY_PLAYLIST2_ID,..."
   YOUTUBE_PLAYLISTS= "YOUTUBE_PLAYLIST1_ID,YOUTUBE_PLAYLIST2_ID,..."
    ```
-1. Start the search and download 
+6. Start the search and download 
    ```sh
    npm start
    ```
@@ -143,6 +144,7 @@ The above parameters are the required ones but you can add other optionnal param
     - [ ] Make searchTerm more relevant (especially for youtube)
     - [ ] Allow user to reject a track that was found and not download the same in future executions
     - [ ] Add Tests
+    - [ ] look into nexe to compile to a exe file https://www.npmjs.com/package/nexe
 - [ ] Add a in memory DB
 - [ ] Add a graphical interface usin electron
 - [ ] Analyse tracks to determine music genre
