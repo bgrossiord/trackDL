@@ -111,8 +111,6 @@ Also, be sure to have `git` available in your PATH, `npm` might need it (You can
    npm install
    ```
 5. Create & configure your `.env` file
-<br/>
-Playlist ids can be easily found at the end of the sharing link url ;)
   ```sh
   SPOTIFY_CLIENT_ID = "YOUR_SPOTIFY_CLIENT_ID"
   SPOTIFY_CLIENT_SECRET = "YOUR_SPOTIFY_CLIENT_SECRET"
@@ -124,6 +122,7 @@ Playlist ids can be easily found at the end of the sharing link url ;)
    ```sh
    npm start
    ```
+<br/>Playlist ids can be easily found at the end of the sharing link url ;)
 
 ### Configuration
 The above parameters are the required ones but you can add other optionnal parameters in the .env file
