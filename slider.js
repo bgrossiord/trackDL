@@ -95,7 +95,7 @@ async function lookOnSlider(
                     parentHtml.indexOf("\" class=\"sm2_link\">")
                 );
                 page._client;
-                await downloadFile( "https://slider.kz" + dlLink, dlPath + search + ".mp3",
+                await downloadFile( "https://slider.kz" + dlLink, dlPath + search.replace(/[/\\?%*:|"<>]/g, "") + ".mp3",
                     search,
                     found
                 );
@@ -103,7 +103,8 @@ async function lookOnSlider(
                     console.log("Rejected time diff is more than "+REJECT_TIME_DIFF+" seconds");
                     break;
                 }
-                if (Math.abs(msDuration - duration) > WARNING_TIME_DIFF*1000) {
+                //Reject from time diff ex
+                if (Math.abs(msDuration - duration) > WARNING_TIME_DIFF*1000 && msDuration < duration) {
                     warnings.push({
                         track: search,
                         warning: "Duration difference is greater than "+WARNING_TIME_DIFF+" seconds",
@@ -136,8 +137,7 @@ async function downloadFile(fileUrl, outputLocationPath, searchTerm, found) {
         url: fileUrl,
         responseType: "stream",
     }).then((response) => {
-    //ensure that the user can call `then()` only when the file has
-    //been downloaded entirely.
+
 
         return new Promise((resolve, reject) => {
             response.data.pipe(writer);
@@ -151,11 +151,12 @@ async function downloadFile(fileUrl, outputLocationPath, searchTerm, found) {
                 if (!error) {
                     resolve(true);
                 }
-                //no need to call the reject here, as it will have been called in the
-                //'error' stream;
+
                 found.push(searchTerm);
             });
         });
+    }).catch((err)=>{
+        console.error(err);
     });
 }
 

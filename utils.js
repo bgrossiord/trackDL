@@ -20,13 +20,14 @@ async function createDlRepository(playlistName) {
 
 async function printReport(playlistName,report) {
     console.log("Printing report");
-    console.log(DL_REPO+path.sep+"report.json");
-    await writeFile(DL_REPO+path.sep+`report${playlistName}.json`, JSON.stringify(report), "utf-8");
+    const  reportPath= DL_REPO+path.sep+playlistName+path.sep+`report${playlistName}.json`;
+    console.log(reportPath);
+    await writeFile(reportPath, JSON.stringify(report), "utf-8");
 }
 
 async function readReport(playlistName){
     try {
-        let rawdata = await readFile(DL_REPO+path.sep+`report${playlistName}.json`);
+        let rawdata = await readFile(DL_REPO+path.sep+playlistName+path.sep+`report${playlistName}.json`);
         let report = JSON.parse(rawdata);
         return report;
     } catch (err) {
