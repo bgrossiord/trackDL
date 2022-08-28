@@ -128,7 +128,7 @@ Also, be sure to have `git` available in your PATH, `npm` might need it (You can
 The above parameters are the required ones but you can add other optionnal parameters in the .env file
    ```
   DL_REPO=Download path for tracks
-  SIMILARITY_TRESHOLD=value between 0 and 1 used as threshold for rejection of the track based on title comparison see string-similarity npm package comparTwoStrings for more detail
+  SIMILARITY_THRESHOLD=value between 0 and 1 used as threshold for rejection of the track based on title comparison see string-similarity npm package comparTwoStrings for more detail
   REJECT_TIME_DIFF=maximum difference in seconds between the track duration and the one found for rejecting the track
   WARNING_TIME_DIFF=maximum difference in seconds between the track duration and the one found for adding the track to warnings in report
   BITRATE_LIMIT=minimum bitrate for rejecting the track (320 by default)
