@@ -11,36 +11,56 @@ const youtube = google.youtube({
     auth: process.env.YOUTUBE_API_KEY,
 });
 
-const PLAYLISTS_IDS = process.env.YOUTUBE_PLAYLISTS.split(",");
+const PLAYLISTS_IDS = process.env.YOUTUBE_PLAYLISTS?.split(",");
+
+const PAGINATION = 50;
 
 const exec = async () => {
-    console.log(PLAYLISTS_IDS[0]);
-    for (const playlistId of PLAYLISTS_IDS) {
-        console.log(playlistId);
-        const plItems = await youtube.playlistItems.list({
-            part: "id,snippet",
-            playlistId: playlistId,
-            maxResults: 50,
-        });
-        const playlist = await youtube.playlists.list({
-            id: playlistId,
-            part: "id,snippet,contentDetails",
-        });
-        const playlistName = "Youtube-" + playlist.data.items[0].snippet.title;
-        console.log(
-            `Retrieved ${plItems.data.items.length.length} tracks reference from ${playlistName} `
-        );
-        const dlPath = await createDlRepository(playlistName);
-
-        const existingReport = await readReport(playlistName);
-
-        for (const plItem of plItems.data.items) {
-            const resVid = await youtube.videos.list({
-                part: ["contentDetails"],
-                id: [plItem.snippet.resourceId.videoId],
+    if(PLAYLISTS_IDS){
+        for (const playlistId of PLAYLISTS_IDS) {
+            console.log(playlistId);
+          
+            const playlist = await youtube.playlists.list({
+                id: playlistId,
+                part: "id,snippet,contentDetails",
             });
-            // console.log("resVid",resVid);
-            const d = moment.duration(resVid.data.items[0].contentDetails.duration);
+            const playlistName = "Youtube-" + playlist.data.items[0].snippet.title;
+           
+            const dlPath = await createDlRepository(playlistName);
+    
+            const existingReport = await readReport(playlistName);
+            const plItems = await retrieveAndDL(playlistId, playlistName, existingReport, dlPath);
+            console.log("total length",plItems.length);
+            await printReport(playlistName, report);
+        }
+    }
+};
+
+
+module.exports = { execYoutube: exec };
+async function retrieveAndDL(playlistId, playlistName, existingReport, dlPath, nextPageToken) {
+    const  request = {
+        part: "id,snippet",
+        playlistId: playlistId,
+        maxResults: PAGINATION,
+    };
+    if(nextPageToken){
+        request.pageToken=nextPageToken;
+    }
+    console.log("request", request);
+    const plItems = await youtube.playlistItems.list(request);
+    console.log("plItems", plItems.data.pageInfo);
+    console.log(
+        `Retrieved ${plItems.data.items.length} tracks reference from ${playlistName} `
+    );
+    for (const plItem of plItems.data.items) {
+        const resVid = await youtube.videos.list({
+            part: ["contentDetails"],
+            id: [plItem.snippet.resourceId.videoId],
+        });
+        // console.log("resVid",resVid);
+        if (resVid.data.items) {
+            const d = moment.duration(resVid.data.items[0]?.contentDetails?.duration);
             // console.log("duration ", d);
             console.log("duration in ms", d.asMilliseconds());
             const search = plItem.snippet.title.replace(/ *\[[^\]]*]/, "");
@@ -55,14 +75,18 @@ const exec = async () => {
                 report.found.push(search);
             }
         }
-        await printReport(playlistName, report);
     }
+    console.log("plItems.data.items.length",plItems.data.items.length);
+    console.log("plItems.nextPageToken",plItems.data.nextPageToken);
 
-    // const videoIds = wlItems.data.items.map((item)=>(item.contentDetails.videoId)).join(",")
-    // const videosRes = await youtube.videos.list( {part: 'snippet', id:videoIds})
-    // console.log(videosRes.data.items)
-};
+    if(plItems.data.nextPageToken ){
+        const res = await retrieveAndDL(playlistId, playlistName, existingReport, dlPath, plItems.data.nextPageToken);
 
-exec();
+        if(res){
+            return [...plItems.data.items, ...res];
+        }
+    }else{
+        return plItems.data.items;
+    }
+}
 
-module.exports = { execYoutube: exec };

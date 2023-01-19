@@ -95,10 +95,18 @@ async function lookOnSlider(
                     parentHtml.indexOf("\" class=\"sm2_link\">")
                 );
                 page._client;
-                await downloadFile( "https://slider.kz" + dlLink, dlPath + search.replace(/[/\\?%*:|"<>]/g, "") + ".mp3",
-                    search,
-                    found
-                );
+                if(dlLink.startsWith("https://")){
+                    await downloadFile( dlLink, dlPath + search.replace(/[/\\?%*:|"<>]/g, "") + ".mp3",
+                        search,
+                        found
+                    );
+                }else{
+                    await downloadFile( "https://slider.kz/" + dlLink, dlPath + search.replace(/[/\\?%*:|"<>]/g, "") + ".mp3",
+                        search,
+                        found
+                    );
+                }
+                
                 if (Math.abs(msDuration - duration) > REJECT_TIME_DIFF*1000) {
                     console.log("Rejected time diff is more than "+REJECT_TIME_DIFF+" seconds");
                     break;

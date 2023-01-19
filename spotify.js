@@ -15,38 +15,41 @@ const spotifyApi = new SpotifyWebApi();
 let report = {warnings: [], found: [], notFound: []};
 
 
-const PLAYLISTS_IDS = process.env.SPOTIFY_PLAYLISTS.split(",");
+const PLAYLISTS_IDS = process.env.SPOTIFY_PLAYLISTS?.split(",");
 
 
 const exec = async () => {
-    try {
-        await initSpotifyApi();
-        
-        for (const plID of PLAYLISTS_IDS) {
-            console.log(plID);
-            const artistNameTracksDuration = await getSpotifyTracksFromPL(plID);
-            const playlistRes = await spotifyApi.getPlaylist(plID);
-            const playlistName = "Spotify-" + playlistRes.body.name;
-            console.log(
-                `Retrieved ${artistNameTracksDuration.length} tracks reference from ${playlistName} `,
-            );
-            const dlPath = await createDlRepository(playlistName);
-            const existingReport = await readReport(playlistName);
-
-
-            for (const trackInfo of artistNameTracksDuration) {
-                if(!existingReport || !existingReport.found.includes(trackInfo.search) ){
-                    await lookOnSlider(trackInfo, dlPath, report);
-                }else{
-                    console.log(trackInfo.search  + "was found previously");
-                    report.found.push(trackInfo.search );
+    if(PLAYLISTS_IDS){
+        try {
+            await initSpotifyApi();
+            
+            for (const plID of PLAYLISTS_IDS) {
+                console.log(plID);
+                const artistNameTracksDuration = await getSpotifyTracksFromPL(plID);
+                const playlistRes = await spotifyApi.getPlaylist(plID);
+                const playlistName = "Spotify-" + playlistRes.body.name;
+                console.log(
+                    `Retrieved ${artistNameTracksDuration.length} tracks reference from ${playlistName} `,
+                );
+                const dlPath = await createDlRepository(playlistName);
+                const existingReport = await readReport(playlistName);
+    
+    
+                for (const trackInfo of artistNameTracksDuration) {
+                    if(!existingReport || !existingReport.found.includes(trackInfo.search) ){
+                        await lookOnSlider(trackInfo, dlPath, report);
+                    }else{
+                        console.log(trackInfo.search  + "was found previously");
+                        report.found.push(trackInfo.search );
+                    }
                 }
+                await printReport(playlistName, report);
             }
-            await printReport(playlistName, report);
+        } catch (err) {
+            console.error(err);
         }
-    } catch (err) {
-        console.error(err);
     }
+    
 
 };
 
