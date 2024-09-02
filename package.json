@@ -16,7 +16,9 @@
     "google-auth-library": "^8.1.1",
     "googleapis": "^105.0.0",
     "moment": "^2.29.4",
-    "puppeteer": "^16.1.0",
+    "puppeteer": "^16.2.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "request": "^2.88.2",
     "spotify-web-api-node": "^5.0.2",
     "string-similarity": "^4.0.4"

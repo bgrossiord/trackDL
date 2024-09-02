@@ -27,10 +27,11 @@ const exec = async () => {
                 console.log(plID);
                 const artistNameTracksDuration = await getSpotifyTracksFromPL(plID);
                 const playlistRes = await spotifyApi.getPlaylist(plID);
-                const playlistName = "Spotify-" + playlistRes.body.name;
+                const playlistName = "Spotify-" +  playlistRes.body.name.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, "");
                 console.log(
                     `Retrieved ${artistNameTracksDuration.length} tracks reference from ${playlistName} `,
                 );
+                
                 const dlPath = await createDlRepository(playlistName);
                 const existingReport = await readReport(playlistName);
     

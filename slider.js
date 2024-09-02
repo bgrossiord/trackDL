@@ -1,9 +1,13 @@
 const fs = require("fs");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+
 const axios = require("axios").default;
 const stringSimilarity = require("string-similarity");
 
 require("dotenv").config();
+
+puppeteer.use(StealthPlugin());
 
 const SIMILARITY_THRESHOLD=  process.env.SIMILARITY_THRESHOLD ? process.env.SIMILARITY_THRESHOLD  : 0.7;
 
@@ -17,11 +21,34 @@ async function lookOnSlider(
     dlPath,
     { warnings, found, notFound }
 ) {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch( {headless: true, args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-infobars",
+        "--window-position=0,0",
+        "--ignore-certifcate-errors",
+        "--ignore-certifcate-errors-spki-list",
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    ]});
     const page = await browser.newPage();
-    console.log("going to ", "https://slider.kz/#" + search);
+    // Set user agent to a common browser user agent
+    await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+    // Set viewport to a common screen size
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    // Set various headers to mimic a real browser
+    await page.setExtraHTTPHeaders({
+        "accept-language": "en-US,en;q=0.9",
+        "sec-fetch-site": "none",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+    });
+
+    console.log("going to ", "https://hayqbhgr.slider.kz/#" + search);
     // TODO search for all  tracks
-    await page.goto("https://slider.kz/#" + search);
+    await page.goto("https://hayqbhgr.slider.kz/#" + search);
 
     const query = "#fullwrapper > div:nth-child(1)";
     const popup = await page.$(query);
@@ -31,10 +58,9 @@ async function lookOnSlider(
     } else {
         console.log("popup not found");
     }
-    await page.waitForTimeout(1000);
-
-    const trackElts = await page.$$(".track .controlPanel .trackTime");
-
+    await page.waitForTimeout(6000);
+    const trackElts = await page.$$("#liveaudio > div.track > div.controlPanel > div.trackTime");
+    //const trackElts = await page.$$(".mainHeader .liveaudio .track .controlPanel .trackTime");
     if (trackElts) {
         let foundTrack = false;
         for (const trackElt of trackElts) {
@@ -101,7 +127,7 @@ async function lookOnSlider(
                         found
                     );
                 }else{
-                    await downloadFile( "https://slider.kz/" + dlLink, dlPath + search.replace(/[/\\?%*:|"<>]/g, "") + ".mp3",
+                    await downloadFile( "https://hayqbhgr.slider.kz/" + dlLink, dlPath + search.replace(/[/\\?%*:|"<>]/g, "") + ".mp3",
                         search,
                         found
                     );
@@ -133,6 +159,7 @@ async function lookOnSlider(
         notFound.push(search);
         console.log("Not found any result on slider :(");
     }
+    await page.waitForTimeout(6000);
     await browser.close();
 }
 
